@@ -1,7 +1,7 @@
 //
 // Created by fss on 22-12-16.
 //
-#include "data/tensor.hpp"
+#include <data/tensor.hpp>
 #include <glog/logging.h>
 #include <memory>
 
@@ -106,7 +106,15 @@ void Tensor<float>::Padding(const std::vector<uint32_t> &pads, float padding_val
   uint32_t pad_cols2 = pads.at(3);  // right
 
   //todo 请把代码补充在这里1
+  arma::fcube tmp(this->rows()+pad_rows1+pad_rows2,
+                  this->cols()+pad_cols1+pad_cols2,
+                  this->channels());
 
+  tmp.fill(padding_value);
+  tmp.subcube(pad_rows1, pad_cols1, 0,
+              this->rows()+pad_rows1-1, this->cols()+pad_cols1-1, this->channels()-1)
+              = this->data_;
+  this->data_ = tmp;
 }
 
 void Tensor<float>::Fill(float value) {
@@ -125,6 +133,23 @@ void Tensor<float>::Fill(const std::vector<float> &values) {
   const uint32_t channels = this->data_.n_slices;
 
   //todo 请把代码补充在这里2
+  int idx = 0;
+  for(int h=0; h<rows; h++) {
+    for(int w=0; w<cols; w++) {
+      for(int c=0; c<channels; c++) {
+        idx = c*planes + h*cols + w;
+        this->data_.at(h,w,c) = values[idx];
+      }
+    }
+  }
+  /*
+  for (uint32_t i = 0; i < channels; ++i) {
+    auto& channel_data = this->data_.slice(i);
+    const arma::fmat& channel_data_t =
+        arma::fmat(values.data() + i * planes, this->cols(), this->rows());
+    channel_data = channel_data_t.t();
+  }
+  */
 }
 
 void Tensor<float>::Show() {

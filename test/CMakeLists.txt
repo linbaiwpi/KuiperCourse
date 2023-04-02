@@ -4,6 +4,8 @@ aux_source_directory(../test DIR_TEST)
 set(link_lib glog gtest pthread  )
 set(link_math_lib armadillo blas lapack)
 
+include_directories(../include)
+
 aux_source_directory(../source/data DIR_DATA)
 add_executable(test_kuiper_course ${DIR_TEST} ${DIR_DATA})
 

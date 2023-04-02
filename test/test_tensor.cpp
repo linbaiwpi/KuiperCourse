@@ -4,7 +4,7 @@
 #include <gtest/gtest.h>
 #include <armadillo>
 #include <glog/logging.h>
-#include "data/tensor.hpp"
+#include <data/tensor.hpp>
 
 TEST(test_tensor, create) {
   using namespace kuiper_infer;
